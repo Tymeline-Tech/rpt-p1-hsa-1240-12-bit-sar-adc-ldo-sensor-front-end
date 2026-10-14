@@ -1,0 +1,1 @@
+# rpt-p1-hsa-1240-12-bit-sar-adc-ldo-sensor-front-end
