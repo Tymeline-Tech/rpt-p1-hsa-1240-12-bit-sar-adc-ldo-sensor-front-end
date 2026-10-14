@@ -1,7 +1,5 @@
 .SUBCKT bgr_top VDD VSS VREF IBIAS
-* Instantiate bandgap core (placeholder)
+* Instantiate core and startup (placeholders)
 XCORE VDD VSS VREF IBIAS bgr_core
-* Instantiate NMOS start-up (placeholder)
-XSTARTUP VDD VSS VREF bgr_startup
-* No functional PTAT/CTAT loop or VREF generation possible here.
+XSTARTUP VDD VSS STARTUP bgr_startup
 .ENDS bgr_top
