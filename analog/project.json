@@ -1,55 +1,71 @@
 {
  "spec": "Project: [RPT-P1] HSA-1240: 12-bit SAR ADC + LDO sensor front-end\n## Project Vision & Context\n\n**Project Name:** HSA-1240: 12-bit SAR ADC + LDO Sensor Front-End\n**Client:** Halvorsen Analog\n**Process Node:** 180 nm-class 5 V CMOS\n\nThe HSA-1240 is a critical low-power, integrated sensor front-end IP block designed for Halvorsen Analog\u2019s industrial pressure-sensor product line. The core vision is to deliver a robust, high-performance analog subsystem that combines high-resolution data conversion with stable on-chip power delivery within a minimal footprint. This IP block is intended to meet stringent industrial reliability standards, ensuring high accuracy and low power consumption in harsh operating environments (industrial temperature range of -40\u00b0C to 125\u00b0C).\n\n## Technical Scope\n\nThe project scope is strictly limited to the **Analog IP Design**, comprising three tightly coupled sub-blocks:\n\n1.  **12-bit SAR ADC**:\n    *   **Performance:** 1 MS/s conversion rate, ENOB >= 11.0 bits, INL/DNL within +/-1 LSB.\n    *   **Input:** Differential, 0-3.3 V range.\n    *   **Power:** <= 1.5 mW at 1 MS/s.\n2.  **On-chip LDO (Low Dropout Regulator)**:\n    *   **Specifications:** 5 V input, 3.3 V output, 50 mA load capability.\n    *   **Performance:** Dropout <= 250 mV, PSRR >= 50 dB at 1 kHz.\n    *   **Stability:** Must remain stable with output capacitors ranging from 1 \u00b5F to 10 \u00b5F.\n3.  **Bandgap Reference (Shared Block)**:\n    *   **Function:** Provides the reference voltage for both the ADC and LDO.\n    *   **Precision:** Temperature coefficient <= 30 ppm/\u00b0C over the full industrial range (-40\u00b0C to 125\u00b0C).\n\n## Governance & Execution Strategy\n\nThe project adheres to Halvorsen Analog\u2019s rigorous analog design review process, characterized by:\n*   **Schematic-First Approach:** No block proceeds to layout until schematic and pre-layout simulations are reviewed and approved by a senior designer.\n*   **Simulation Rigor:** All simulation results must explicitly define Process, Voltage, and Temperature (PVT) corners.\n*   **Compliance Tracking:** Strict documentation of spec value, simulated value, and margin for every parameter.\n*   **Sign-off Authority:** Final DRC, LVS, and tape-out readiness are exclusively approved by the **Analog Design Director**.\nInstructions: <p>Follow our analog design review process: no block moves to layout before its schematic and pre-layout simulations are reviewed by a senior designer. Every result must state the corner, temperature and supply it was simulated at. Sign-off (DRC, LVS, tape-out readiness) is approved only by the Analog Design Director. Track spec compliance per parameter (spec value, simulated value, margin).</p>\n\nEpic: Bandgap Reference Schematic Design & Pre-Layout Simulation\nThis epic focuses on the design and verification of the shared Bandgap Reference (BGR). The BGR provides the critical voltage reference for both the SAR ADC and LDO. The primary goal is to achieve a temperature coefficient (TC) of <= 30 ppm/\u00b0C across the industrial temperature range of -40\u00b0C to 125\u00b0C. The design must ensure reliable start-up and robust noise performance. Following the 'Schematic-First' approach, the schematic and comprehensive temperature sweep simulations must be reviewed and signed off by the Senior Analog Designer before layout.\nExpectations: A validated BGR schematic and temperature coefficient simulation report, signed off by the Senior Analog Designer.\n\nStory: Bandgap Reference Schematic Design & Nominal Verification\nDesign and verify the core Bandgap Reference (BGR) schematic targeting a temperature coefficient (TC) of <= 30 ppm/\u00b0C. This story covers the selection of a robust topology (e.g., Brokaw cell with fractional Bandgap architecture for high linearity), the design of the start-up circuit to prevent latching in low-sensitivity operating points, and the creation of the transistor-level netlist. The design must be simulated at nominal conditions (TT corner, 25\u00b0C, 5.0V supply) to establish a baseline operating point and confirm the theoretical linearity/TC limits. This establishes the foundation for subsequent PVT verification. The deliverable is a version-controlled Xschem schematic and netlist, validated for DC operating point integrity and start-up reliability.",
  "plan": {
-  "title": "Bandgap Reference Schematic Design & Nominal Verification \u2013 Start-up Circuit Integration",
-  "summary": "Design and integrate the start-up circuit for the Brokaw cell-based bandgap reference (BGR). Verify schematic connectivity and simulate the integrated netlist at all supply voltages. Run PVT check. No layout or documentation in this phase.",
+  "title": "Bandgap Reference Schematic Design & Nominal Verification - Simulation Phase",
+  "summary": "Execute nominal condition simulations for the Bandgap Reference (BGR) block. Run DC operating point and startup transient simulations at TT/25C/5V for the existing bgr_core, bgr_startup, and bgr_top cells. Analyze logs for correct operation and startup behavior. No netlist or layout changes; simulation and verification only.",
   "deliverables": [],
   "phases": [
    {
-    "id": "task-6c23606f-81a1-4be1-8da4-cf36be8c6798",
-    "name": "Implement Start-up Circuitry and Schematic Integration",
-    "goal": "design the circuit: write or import the cell netlist(s), simulate them at every supply, and run the PVT check (and the SEU check for storage cells). Do NOT plan any layout.",
+    "id": "task-d51f6983-b30d-430a-9b5b-4a5197cee2e1",
+    "name": "Execute Nominal Condition Simulations (TT, 25C, 5V)",
+    "goal": "re-check the existing cell(s): simulation, PVT and SEU checks only. Do NOT change netlists unless they are missing, and do NOT plan any layout.",
     "steps": [
      {
-      "id": "s1_write_cell_netlist_bgr_startup",
+      "id": "s1_write_cell_netlist_bgr_core",
       "action": "write_cell_netlist",
-      "target": "bgr_startup",
-      "description": "Write netlist for the start-up circuit (custom kind).",
+      "target": "bgr_core",
+      "description": "Register the existing bgr_core netlist as a custom cell.",
       "args": {}
      },
      {
-      "id": "s2_simulate_cell_bgr_startup",
-      "action": "simulate_cell",
+      "id": "s2_write_cell_netlist_bgr_startup",
+      "action": "write_cell_netlist",
       "target": "bgr_startup",
-      "description": "Simulate start-up circuit for functional verification.",
+      "description": "Register the existing bgr_startup netlist as a custom cell.",
       "args": {}
      },
      {
       "id": "s3_write_cell_netlist_bgr_top",
       "action": "write_cell_netlist",
       "target": "bgr_top",
-      "description": "Write netlist for integrated BGR (bgr_core + bgr_startup), kind custom.",
+      "description": "Register the existing bgr_top netlist as a custom cell.",
       "args": {}
      },
      {
-      "id": "s4_simulate_cell_bgr_top",
+      "id": "s4_simulate_cell_bgr_core",
+      "action": "simulate_cell",
+      "target": "bgr_core",
+      "description": "Run DC operating point and startup transient simulation for bgr_core at TT/25C/5V.",
+      "args": {}
+     },
+     {
+      "id": "s5_simulate_cell_bgr_startup",
+      "action": "simulate_cell",
+      "target": "bgr_startup",
+      "description": "Run DC operating point and startup transient simulation for bgr_startup at TT/25C/5V.",
+      "args": {}
+     },
+     {
+      "id": "s6_simulate_cell_bgr_top",
       "action": "simulate_cell",
       "target": "bgr_top",
-      "description": "Simulate integrated BGR at all supply voltages.",
+      "description": "Run DC operating point and startup transient simulation for bgr_top at TT/25C/5V.",
       "args": {}
      },
      {
-      "id": "s5_pvt_check_bgr_top",
       "action": "pvt_check",
       "target": "bgr_top",
-      "description": "Run PVT check on integrated BGR.",
+      "description": "bgr_top at every corner and temperature",
+      "id": "s7_pvt_check_bgr_top",
       "args": {}
      }
     ],
     "deliverables": []
    }
   ],
-  "notes": []
+  "notes": [
+   "Checks added by the system: pvt_check bgr_top"
+  ]
  },
  "plan_approved": true,
  "phase": 1,
@@ -182,6 +198,10 @@
   {
    "time": "08:17:08",
    "event": "phase task-6c23606f-81a1-4be1-8da4-cf36be8c6798 done, waiting for review"
+  },
+  {
+   "time": "08:17:30",
+   "event": "phase task-d51f6983-b30d-430a-9b5b-4a5197cee2e1 done, waiting for review"
   }
  ],
  "plan_status": "approved"
