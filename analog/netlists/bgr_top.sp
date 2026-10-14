@@ -1,6 +1,7 @@
-.subckt bgr_top VDD VSS VREF IBIAS
-* Instantiate core bandgap reference
+.SUBCKT bgr_top VDD VSS VREF IBIAS
+* Instantiate bandgap core (placeholder)
 XCORE VDD VSS VREF IBIAS bgr_core
-* Start-up circuit (STARTUP node connects to bgr_core's start-up node, assumed VREF for this example)
+* Instantiate NMOS start-up (placeholder)
 XSTARTUP VDD VSS VREF bgr_startup
-.ends bgr_top
+* No functional PTAT/CTAT loop or VREF generation possible here.
+.ENDS bgr_top
